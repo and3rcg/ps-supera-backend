@@ -36,6 +36,18 @@ class Produto(models.Model):
         super().save(*args, **kwargs)
 
 
+class Endereco(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=50)
+    cep = models.CharField(max_length=8)
+    rua = models.CharField(max_length=50)
+    residencia = models.CharField(max_length=10)
+    complemento = models.CharField(max_length=20)
+    bairro = models.CharField(max_length=20)
+    cidade = models.CharField(max_length=20)
+    estado = models.CharField(max_length=20)
+
+
 class Pedido(models.Model):
     STATUS_CHOICES = (
         ('entregue', 'Entregue'),
@@ -46,6 +58,7 @@ class Pedido(models.Model):
 
     id_pedido = models.CharField(max_length=12, unique=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
+    endereco = models.ForeignKey(Endereco, null=True, blank=True, on_delete=models.SET_NULL)
     frete = models.FloatField()
     subtotal = models.FloatField()
     total = models.FloatField()  # subtotal + frete
@@ -63,15 +76,3 @@ class ItemPedido(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(null=False, blank=False, default=1)
-
-
-class Endereco(models.Model):
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    nome = models.CharField(max_length=50)
-    cep = models.CharField(max_length=8)
-    rua = models.CharField(max_length=50)
-    residencia = models.CharField(max_length=10)
-    complemento = models.CharField(max_length=20)
-    bairro = models.CharField(max_length=20)
-    cidade = models.CharField(max_length=20)
-    estado = models.CharField(max_length=20)
