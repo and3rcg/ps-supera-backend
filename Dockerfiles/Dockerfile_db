@@ -1,0 +1,4 @@
+FROM postgres:14-alpine
+RUN mkdir -p /var/lib/postgresql/data
+RUN chmod -R 777 /var/lib/postresql/data
+ENTRYPOINT docker-entrypoint.sh

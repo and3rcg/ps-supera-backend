@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   web:
+    container_name: supera_backend
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes: 
@@ -12,14 +13,15 @@ services:
       - db
   
   db:
-    image: postgres:14-bullseye
+    container_name: supera_db
+    image: postgres:14-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
     volumes:
-      - ./pg_data:/var/lib/postgresql/data/
+      - ./pg_data:/var/lib/postgresql/data/:z
   
 volumes:
   pg_data:

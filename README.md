@@ -10,4 +10,6 @@ Esse projeto consiste na criação de um backend e API com Django, banco de dado
 -   Instalar as dependências (`pip install -r requirements.txt`);
 -   Iniciar a aplicação Docker (`docker-compose up`).
 
+-   Executar as migrações (`docker exec supera-backend python manage.py migrate`)
+
 ## Endpoints da API

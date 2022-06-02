@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Custom user model
+# https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#specifying-a-custom-user-model
+AUTH_USER_MODEL = 'api.User'
+
 
 # Application definition
 
@@ -88,6 +92,7 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+SOUTH_TESTS_MIGRATE = False
 
 
 # Password validation
