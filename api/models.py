@@ -52,16 +52,17 @@ class Pedido(models.Model):
     STATUS_CHOICES = (
         ('entregue', 'Entregue'),
         ('cancelado', 'Cancelado'),
-        ('aguardando pagamento', 'Aguardando pagamento'),
+        ('aprovado', 'Pagamento aprovado'),
         ('carrinho', 'Carrinho'),
     )
 
     id_pedido = models.CharField(max_length=12, unique=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
     endereco = models.ForeignKey(Endereco, null=True, blank=True, on_delete=models.SET_NULL)
-    frete = models.FloatField()
-    subtotal = models.FloatField()
-    total = models.FloatField()  # subtotal + frete
+    quantidade = models.IntegerField(default=0)  # quantidade total de itens
+    frete = models.FloatField(default=0)
+    subtotal = models.FloatField(default=0)
+    total = models.FloatField(default=0)  # subtotal + frete
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='carrinho')
 
     def save(self, *args, **kwargs):
