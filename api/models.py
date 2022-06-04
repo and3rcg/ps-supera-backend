@@ -11,7 +11,7 @@ class User(AbstractUser):
     saldo = models.FloatField(blank=False, null=False, default=0)
     cpf = models.CharField(max_length=11, unique=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'cpf']
 
     def __str__(self):
         return self.get_full_name().title()

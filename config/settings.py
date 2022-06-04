@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,7 +46,38 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'rest_framework_simplejwt.token_blacklist',
+    'djoser',
 ]
+
+
+# REST Framework config
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+# Djoser config
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user': 'api.serializers.RegistroSerializer',
+        'user_create': 'api.serializers.RegistroSerializer',
+        'current_user': 'api.serializers.PerfilSerializer'
+    },
+}
+
+# SimpleJWT config
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # tokens will stay alive for a week
+    'ROTATE_REFRESH_TOKENS': True,  # users won't have to log in again if they visit within a week
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),  # prefixes for the Authorization header
+    'BLACKLIST_AFTER_ROTATION': True,  # uses the blacklist app to blacklist refreshed tokens
+}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -92,7 +124,7 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-SOUTH_TESTS_MIGRATE = False
+# SOUTH_TESTS_MIGRATE = False
 
 
 # Password validation
@@ -141,7 +173,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
-
-# REST Framework config
-REST_FRAMEWORK = {
-}
