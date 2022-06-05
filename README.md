@@ -7,7 +7,8 @@ Esse projeto consiste na criação de um backend e API com Django, banco de dado
 
 1. [Instruções de inicialização](#instruções-de-inicialização)
 2. [Endpoints da API](#endpoints-da-api)
-3. [Notas adicionais](#notas-adicionais)
+3. [Referência da API](#referencia-da-api)
+4. [Notas adicionais](#notas-adicionais)
 
 ## Instruções de inicialização
 
@@ -16,7 +17,7 @@ Esse projeto consiste na criação de um backend e API com Django, banco de dado
 -   Instalar as dependências (`pip install -r requirements.txt`);
 -   Iniciar a aplicação Docker (`docker-compose up`).
 
--   Executar as migrações (`docker exec supera-backend python manage.py migrate`)
+-   Executar as migrações (`docker exec supera_backend python manage.py migrate`)
 
 ## Endpoints da API
 
@@ -29,6 +30,148 @@ Todos os endpoints abaixo foram montados com variações do `ModelViewset` forne
     -   `pedidos/<id>/ver_itens/` (GET): Nesse endpoint é possível verificar os itens comprados num pedido específico;
     -   `pedidos/checkout/` (POST): Nesse endpoint, é concluído o pagamento de algum carrinho
 -   `itens_pedido/` (GET, POST, PATCH, DELETE): Aqui, apenas usuários autenticados
+
+## Referência da API
+
+1. Usuários:  
+   1.1. Criar usuário: POST em `/api/auth/users`
+
+```json
+Body params:
+    {
+        "username": string,
+        "password": string,
+        "re_password": string,  // validação de senha, deve ser igual ao password
+        "email": string,
+        "first_name": string,
+        "first_name": string,
+        "cpf": string,
+    }
+
+Response:
+    {
+        "data": {
+            "username": string,
+            "first_name": string,
+            "last_name": string,
+            "cpf": string,
+            "email": string,
+            "id": int
+        },
+        "status": HTTP 201 Created
+    }
+```
+
+1.2. Login: POST em `/api/auth/jwt/create`
+
+```json
+Body params:
+    {
+        "email": string,
+        "password": string
+    }
+
+Response:
+    {
+        "data":
+        {
+            "access": string,
+            "refresh": string
+        },
+        "status": HTTP 200 OK
+    }
+```
+
+2. Produtos:  
+   2.1. Adicionar um produto ao carrinho: POST em `/api/produtos/<id:int>/adicionar_ao_carrinho/`
+
+```json
+Headers:
+    {
+        "Content-type": "application/json",
+        "Authorization": "JWT <access_token>"
+    }
+
+Body params:
+    {
+        "quantidade": int
+    }
+
+Response:
+    {
+        "data": {
+            "id": int,
+            "id_pedido": string,
+            "quantidade": string,
+            "frete": float,
+            "subtotal": float,
+            "total": float,
+            "status": string,
+            "data_pedido": datetime,
+            "cliente": string,
+            "endereco": null
+        },
+        "status": HTTP 201 Created
+    }
+```
+
+3. Adicionar um endereço: POST em `/api/enderecos/`
+
+```json
+Headers:
+    {
+        "Content-type": "application/json",
+        "Authorization": "JWT <access_token>"
+    }
+
+Body params:
+    {
+        "nome": string,
+        "cep": string,
+        "rua": string,
+        "residencia": string,
+        "complemento"?: string,
+        "bairro": string,
+        "cidade": string,
+        "estado": string
+    }
+
+Response:
+    "data": {
+        "id": int,
+        "nome": string,
+        "cep": string,
+        "rua": string,
+        "residencia": string,
+        "complemento": string,
+        "bairro": string,
+        "cidade": string,
+        "estado": string,
+        "cliente": int
+    },
+    "status": HTTP 201 Created
+```
+
+4. Checkout de pedido: POST em `/api/pedidos/checkout/`
+
+```json
+Headers:
+    {
+        "Content-type": "application/json",
+        "Authorization": "JWT <access_token>"
+    }
+
+Body params:
+    {
+        "endereco": int,
+    }
+
+Response:
+    "data": {
+        "mensagem": "Transação concluída"
+    },
+    "status": HTTP 200 OK
+```
 
 ## Notas adicionais:
 

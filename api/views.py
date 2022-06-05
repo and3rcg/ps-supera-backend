@@ -59,15 +59,13 @@ class ProdutoViewset(viewsets.ReadOnlyModelViewSet):
 
         pedido_serializer = PedidoSerializer(pedido_atual)
 
-        if criado:
-            return Response(data=pedido_serializer.data, status=status.HTTP_201_CREATED)
-        # se já foi encontrado um pedido com status 'carrinho' do cliente atual, então:
-        return Response(data=pedido_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=pedido_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class EnderecoViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Endereco.objects.all()
+    serializer_class = EnderecoSerializer
 
     def list(self, request):
         cliente = request.user
@@ -75,6 +73,15 @@ class EnderecoViewset(viewsets.ModelViewSet):
         serializer = EnderecoSerializer(queryset, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        cliente = request.user
+        dados_endereco = {'cliente': cliente.pk, **request.data}
+        serializer = self.get_serializer(data=dados_endereco)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class PedidoViewset(viewsets.ModelViewSet):
