@@ -24,15 +24,20 @@ class Produto(models.Model):
     slug = models.SlugField(blank=True, null=True)
     estoque = models.PositiveIntegerField(blank=False, null=False, default=1)
     listado = models.BooleanField(blank=False, null=False, default=True)
+    data_adicionado = models.DateTimeField(null=True, auto_now_add=True)
+    imagem = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.nome
 
     def save(self, *args, **kwargs):
-        # arredondar o preço e criar slug automaticamente
+        # arredondar o preço, criar slug automaticamente e ocultar produtos fora de estoque
         self.preco = round(self.preco, 2)
         if self.slug is None:
             self.slug = slugify(self.nome)
+
+        if self.estoque == 0:
+            self.listado = False
         super().save(*args, **kwargs)
 
 
@@ -56,7 +61,7 @@ class Pedido(models.Model):
         ('carrinho', 'Carrinho'),
     )
 
-    id_pedido = models.CharField(max_length=12, unique=True)
+    id_pedido = models.CharField(max_length=12, blank=True, unique=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
     endereco = models.ForeignKey(Endereco, null=True, blank=True, on_delete=models.SET_NULL)
     quantidade = models.IntegerField(default=0)  # quantidade total de itens
@@ -64,10 +69,15 @@ class Pedido(models.Model):
     subtotal = models.FloatField(default=0)
     total = models.FloatField(default=0)  # subtotal + frete
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='carrinho')
+    data_pedido = models.DateTimeField(auto_now_add=True, null=True)
 
     def save(self, *args, **kwargs):
+        self.frete = 10 * self.quantidade
         if self.subtotal >= 250:
             self.frete = 0
+
+        if self.id_pedido == "":
+            self.id_pedido = gerar_id(12)
 
         self.total = self.subtotal + self.frete
         super().save(*args, **kwargs)

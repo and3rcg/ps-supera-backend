@@ -29,6 +29,9 @@ class ProdutoViewset(viewsets.ReadOnlyModelViewSet):
                 campo_ordem = query_params.get('ordem')
                 return queryset.order_by(campo_ordem)
 
+            if 'slug' in query_params:
+                queryset = queryset.filter(slug=query_params.get('slug'))
+
         return queryset
 
     @action(detail=True, methods=['post'])
@@ -39,7 +42,7 @@ class ProdutoViewset(viewsets.ReadOnlyModelViewSet):
         pedido_atual, criado = Pedido.objects.get_or_create(
             cliente=cliente_atual,
             status='carrinho',
-            defaults={'id_pedido': gerar_id(12)},
+            #defaults={'id_pedido': gerar_id(12)},
         )
 
         produto_comprado = ItemPedido.objects.create(
@@ -50,7 +53,7 @@ class ProdutoViewset(viewsets.ReadOnlyModelViewSet):
 
         pedido_atual.quantidade += produto_comprado.quantidade
         # dez reais de frete para cada produto no pedido
-        pedido_atual.frete = 10 * pedido_atual.quantidade
+        # pedido_atual.frete = 10 * pedido_atual.quantidade
         pedido_atual.subtotal += produto_atual.preco * produto_comprado.quantidade
         pedido_atual.save()
 
@@ -94,6 +97,16 @@ class PedidoViewset(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def carrinho(self, request):
+        # endpoint para verificar os itens do carrinho
+        cliente_atual = request.user
+        carrinho = ItemPedido.objects.filter(
+            pedido__cliente=cliente_atual, pedido__status='carrinho')
+        serializer = ItemPedidoSerializer(carrinho, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'])
     def checkout(self, request):
         '''
@@ -125,8 +138,6 @@ class PedidoViewset(viewsets.ModelViewSet):
             produto = item_comprado.produto
             produto.estoque -= item_comprado.quantidade
 
-            if produto.estoque == 0:  # ocultar o produto do site se ficar fora de estoque
-                produto.listado = False
             produto.save()
 
         # dedução do saldo do cliente

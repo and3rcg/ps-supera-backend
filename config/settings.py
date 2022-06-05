@@ -78,6 +78,15 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,  # uses the blacklist app to blacklist refreshed tokens
 }
 
+# CORS headers config
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d{4}$",
+]
+
+# Configuração usada apenas para essa demonstração
+# Setting used only for this demonstration's scope
+# CORS_ALLOW_ALL_ORIGINS = True
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -149,9 +158,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -163,13 +172,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR/'static',
+]
+
+MEDIA_URL = 'images/'
+MEDIA_ROOT = BASE_DIR/'static'/'images'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# CORS headers config
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-]

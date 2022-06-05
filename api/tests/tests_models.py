@@ -1,6 +1,7 @@
 from django.test import TestCase
+
+from ..models import Endereco, Pedido, Produto, User
 from ..utils import gerar_id
-from ..models import User, Produto, Pedido, ItemPedido, Endereco
 
 
 class UserTestCase(TestCase):
@@ -73,18 +74,20 @@ class PedidoTestCase(TestCase):
             password='foo'
         )
 
+        # pedido de três produtos com subtotal de 197.88: o total deve ser 227.88
         Pedido.objects.create(
             subtotal=197.88,
             id_pedido=gerar_id(12),
             cliente=joao_bobo,
-            frete=30
+            quantidade=3
         )
 
+        # pedido de cinco produtos com subtotal de 250: o total deve ser 250
         Pedido.objects.create(
-            frete=40,
             id_pedido=gerar_id(12),
             subtotal=250,
             cliente=joao_bobo,
+            quantidade=5
         )
 
     def test_total(self):
