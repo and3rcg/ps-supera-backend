@@ -1,4 +1,4 @@
-# Supera Games - Backend
+# Supera Games - Back-end
 
 Projeto relativo ao processo seletivo de Desenvolvedor Python para a empresa Supera Inovação e Tecnologia.  
 Esse projeto consiste na criação de um backend e API com Django, banco de dados PostgreSQL e front-end com React (repositório), containerizados com Docker Compose.
@@ -7,7 +7,7 @@ Esse projeto consiste na criação de um backend e API com Django, banco de dado
 
 1. [Instruções de inicialização](#instruções-de-inicialização)
 2. [Endpoints da API](#endpoints-da-api)
-3. [Referência da API](#referencia-da-api)
+3. [Referência da API](#referência-da-api)
 4. [Notas adicionais](#notas-adicionais)
 
 ## Instruções de inicialização
@@ -15,9 +15,10 @@ Esse projeto consiste na criação de um backend e API com Django, banco de dado
 -   Clonar este repositório (`git clone`);
 -   Criar e ativar um ambiente virtual Python (`python -m venv venv && source venv/bin/activate` no Linux);
 -   Instalar as dependências (`pip install -r requirements.txt`);
--   Iniciar a aplicação Docker (`docker-compose up`).
-
--   Executar as migrações (`docker exec supera_backend python manage.py migrate`)
+-   Iniciar a aplicação Docker (`docker-compose up`);
+-   Executar as migrações (`docker exec supera_backend python manage.py migrate`);
+-   Pré-popular o banco de dados com os jogos do arquivo `products.json` fornecido, com o comando `docker exec supera_backend python manage.py preencherdb`;
+-   Inicializar o [front-end](https://github.com/and3rcg/ps-supera-frontend)
 
 ## Endpoints da API
 
